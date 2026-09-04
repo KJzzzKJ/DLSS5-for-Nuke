@@ -84,8 +84,8 @@ public:
 
     // Process a single frame. Thread-safe.
     bool processFrame(
-        uint32_t index, 
-        bool reset, 
+        uint32_t index,
+        bool reset,
         int64_t pts,
         const uint8_t* rgba_data, size_t rgba_size,
         const uint8_t* motion_data, size_t motion_size,

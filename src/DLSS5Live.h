@@ -114,4 +114,3 @@ private:
     bool m_cache_valid = false;
     uint32_t m_frame_index = 0;
 };
-

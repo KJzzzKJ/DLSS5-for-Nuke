@@ -96,15 +96,15 @@ bool WorkerBridge::start(const std::string& nvngx_path, const VideoHeader& heade
     std::string cmdArgs = "\"" + nvngx_path + "\" --video";
     std::vector<char> cmdArgsBuf(cmdArgs.begin(), cmdArgs.end());
     cmdArgsBuf.push_back('\0');
-    
+
     BOOL bSuccess = CreateProcessA(
-        NULL, 
-        cmdArgsBuf.data(), 
-        NULL, NULL, TRUE, 
-        CREATE_NO_WINDOW, 
-        NULL, 
+        NULL,
+        cmdArgsBuf.data(),
+        NULL, NULL, TRUE,
+        CREATE_NO_WINDOW,
+        NULL,
         workingDir.empty() ? NULL : workingDir.c_str(),
-        &siStartInfo, 
+        &siStartInfo,
         &piProcInfo
     );
 
@@ -205,7 +205,7 @@ bool WorkerBridge::processFrame(
         is_running = false;
         return false;
     }
-    
+
     // Write motion vector buffer only if mv_mode == 1 (EXTERNAL_BUFFER)
     if (m_header.mv_mode == 1) {
         if (motion_size > 0 && motion_data != nullptr) {

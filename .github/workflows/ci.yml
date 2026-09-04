@@ -1,0 +1,69 @@
+name: Public source checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-policy:
+    name: Public source policy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check changed whitespace
+        shell: bash
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          else
+            base="${{ github.event.before }}"
+          fi
+
+          if [[ -n "$base" && "$base" != "0000000000000000000000000000000000000000" ]]; then
+            git diff --check "$base" "$GITHUB_SHA"
+          else
+            git diff-tree --check --root --no-commit-id -r "$GITHUB_SHA"
+          fi
+
+      - name: Reject private paths and common credential material
+        shell: bash
+        run: |
+          blocked_paths='(^|/)(\.env(\..*)?|\.private|internal|company|dist|package|runtime)(/|$)|\.(pem|key|pfx|p12|crt|cer)$|(^|/)release-notes\.private\.md$'
+          if git ls-files | grep -E "$blocked_paths"; then
+            echo "Tracked file violates the public-source boundary."
+            exit 1
+          fi
+
+          secret_pattern='gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN ([A-Z ]+ )?PRIVATE KEY-----'
+          if git grep -nEI "$secret_pattern" -- .; then
+            echo "Potential credential material found. Remove it before publishing."
+            exit 1
+          fi
+
+      - name: Compile Python syntax only
+        run: python -m compileall -q install
+
+  secret-scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan repository history and source
+        uses: gitleaks/gitleaks-action@v2
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

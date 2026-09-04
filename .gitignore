@@ -1,0 +1,99 @@
+# ====================================================================
+# DLSS 5 for Nuke - Git Ignore
+# ====================================================================
+
+# C++ Build & Output Directories
+build/
+build_*/
+bin/
+dist/
+package/
+out/
+.cache/
+
+# Visual Studio & IDE files
+.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Compiled Binaries & Libraries (Distribute via GitHub Releases)
+*.dll
+*.exe
+*.addon64
+*.lib
+*.exp
+*.pdb
+*.obj
+*.o
+*.a
+*.so
+*.dylib
+
+# Runtime binary dependencies (distributed via Releases)
+runtime/
+
+# Compressed archives
+*.zip
+*.tar
+*.gz
+*.7z
+
+# Python cache & logs
+__pycache__/
+*.pyc
+*.pyo
+*.log
+*.log*
+
+# Nuke Render & Test Outputs
+*.png
+*.exr
+*.tif
+*.tiff
+*.jpg
+*.jpeg
+*.mp4
+dlss5_verify_output.*
+test_render_*.png
+test_render_*.exr
+
+# Plugin UI Assets (Keep install icons tracked)
+!install/*.png
+!install/**/*.png
+
+# Local test scripts (retained locally for CLI verification, untracked in Git)
+/tests/
+
+# Internal Studio Scripts (Contains private UNC paths / hosts)
+tools/*publish*
+tools/*deploy*
+
+# Private/company material: never commit or attach to a GitHub Release.
+# `dist/` above already ignores all generated packages; the explicit channel
+# paths keep the public/internal release boundary visible to maintainers.
+/dist/github/
+/dist/internal/
+/.private/
+/internal/
+/company/
+*.internal.*
+*.private.*
+
+# Local credentials and signing material. Keep only a reviewed `.env.example`.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+*.crt
+*.cer
+
+# Local Nuke/studio configuration and private release notes.
+/.nuke/
+release-notes.private.md
+
+# Local agent instructions are intentionally not part of the public repository.
+/AGENTS.md
